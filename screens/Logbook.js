@@ -4,8 +4,18 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function LogbookScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Fishing Logbook</Text>
-      {/* Add functionality to log fishing spots, catches, etc. */}
+      {/* Title Section */}
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Fishing Logbook</Text>
+      </View>
+
+      {/* Content Section */}
+      <View style={styles.contentContainer}>
+        <Text style={styles.infoText}>
+          {/* Placeholder for logbook functionality */}
+          Log your fishing spots, catches, and more here!
+        </Text>
+      </View>
     </View>
   );
 }
@@ -13,12 +23,28 @@ export default function LogbookScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#f0f0f0',
   },
-  text: {
-    color: '#333333',
+  titleContainer: {
+    backgroundColor: 'indigo',
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  title: {
+    color: '#fff',
+    fontSize: 21,
+    fontFamily: 'MononokiBold', // Applied Mononoki Bold font
+    paddingBottom: 23,
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  infoText: {
     fontSize: 18,
+    color: '#333333',
+    textAlign: 'center',
   },
 });

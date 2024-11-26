@@ -28,7 +28,6 @@ export default function App() {
         <Tab.Screen name="Fishing Tips" component={FishingTipsScreen} options={{ tabBarIcon: () => (<Text style={{ fontSize: 30 }}>🐟</Text>) }} />
         <Tab.Screen name="Weather" component={WeatherScreen} options={{ tabBarIcon: () => (<Text style={{ fontSize: 30 }}>☀️</Text>) }} />
         <Tab.Screen name="Logbook" component={LogbookScreen} options={{ tabBarIcon: () => (<Text style={{ fontSize: 30 }}>📖</Text>) }} />
-
         </Tab.Navigator>
       </View>
     </NavigationContainer>
@@ -46,7 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 0,
-    paddingTop: 35,
+    paddingTop: 40,
     },
   headerText: {
     color: '#ffffff',

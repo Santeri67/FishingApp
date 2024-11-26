@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function WeatherScreen() {
     const [location, setLocation] = useState(null);
@@ -10,7 +10,7 @@ export default function WeatherScreen() {
 
     useEffect(() => {
         (async () => {
-            // Request permission for location
+            // permission for location
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 setErrorMsg('Permission to access location was denied');
@@ -23,11 +23,11 @@ export default function WeatherScreen() {
                 setLocation(loc);
                 const { latitude, longitude } = loc.coords;
 
-                // Define API Key and URL with units for Celsius
+                // API Key and URL
                 const apiKey = '1ce8d81a5967e4046d0d64e086eb5bb0';
                 const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${apiKey}`;
 
-                // Fetch weather data
+                // Fetch weather
                 try {
                     const response = await axios.get(weatherUrl);
                     setWeather(response.data);
@@ -40,21 +40,33 @@ export default function WeatherScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Weather Information</Text>
-            {errorMsg ? <Text style={styles.text}>{errorMsg}</Text> : null}
-            {weather ? (
-                <>
-                    <Text style={styles.text}>
-                        Temperature: {Math.round(weather.main.temp)}°C
-                    </Text>
-                    <Text style={styles.text}>
-                        Condition: {weather.weather[0].description}
-                    </Text>
-                    <Text style={styles.text}>
-                        Location: {weather.name}
-                    </Text>
-                </>
-            ) : null}
+            {/* Title Section */}
+            <View style={styles.titleContainer}>
+                <Text style={styles.title}>Weather Information</Text>
+            </View>
+
+            {/* Weather Details Section */}
+            <ScrollView contentContainerStyle={styles.contentContainer}>
+                {errorMsg ? (
+                    <Text style={styles.errorText}>{errorMsg}</Text>
+                ) : weather ? (
+                    <>
+                        <View style={styles.weatherBox}>
+                            <Text style={styles.infoText}>
+                                <Text style={styles.boldText}>Temperature:</Text> {Math.round(weather.main.temp)}°C
+                            </Text>
+                            <Text style={styles.infoText}>
+                                <Text style={styles.boldText}>Condition:</Text> {weather.weather[0].description}
+                            </Text>
+                            <Text style={styles.infoText}>
+                                <Text style={styles.boldText}>Location:</Text> {weather.name}
+                            </Text>
+                        </View>
+                    </>
+                ) : (
+                    <Text style={styles.loadingText}>Loading weather data...</Text>
+                )}
+            </ScrollView>
         </View>
     );
 }
@@ -62,13 +74,49 @@ export default function WeatherScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: '#f0f0f0',
     },
-    text: {
-        color: '#333333',
+    titleContainer: {
+        backgroundColor: 'indigo',
+        paddingVertical: 10,
+        alignItems: 'center',
+    },
+    title: {
+        color: '#fff',
+        fontSize: 21,
+        fontFamily: 'MononokiBold', // Applied Mononoki Bold font
+        paddingBottom: 23,
+    },
+    contentContainer: {
+        padding: 20,
+    },
+    weatherBox: {
+        padding: 15,
+        backgroundColor: '#ffffff',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    infoText: {
         fontSize: 18,
-        marginBottom: 5,
+        color: '#333333',
+        marginBottom: 10,
+    },
+    boldText: {
+        fontWeight: 'bold',
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 16,
+        textAlign: 'center',
+        marginVertical: 20,
+    },
+    loadingText: {
+        fontSize: 16,
+        color: '#666666',
+        textAlign: 'center',
     },
 });
