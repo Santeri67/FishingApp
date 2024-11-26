@@ -26,7 +26,7 @@ export default function App() {
         </View>
         <Tab.Navigator screenOptions={{ headerShown: false, tabBarStyle: { height: 90, paddingBottom: 22, backgroundColor: 'indigo' } }}>
         <Tab.Screen name="Fishing Tips" component={FishingTipsScreen} options={{ tabBarIcon: () => (<Text style={{ fontSize: 30 }}>🐟</Text>) }} />
-        <Tab.Screen name="Weather" component={WeatherScreen} options={{ tabBarIcon: () => (<Text style={{ fontSize: 30 }}>☀️</Text>) }} />
+        <Tab.Screen name="Weather" component={WeatherScreen} options={{ tabBarIcon: () => (<Text style={{ fontSize: 30 }}>🌤️</Text>) }} />
         <Tab.Screen name="Logbook" component={LogbookScreen} options={{ tabBarIcon: () => (<Text style={{ fontSize: 30 }}>📖</Text>) }} />
         </Tab.Navigator>
       </View>
