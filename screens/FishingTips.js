@@ -3,16 +3,16 @@ import React, { useState } from 'react';
 import {
   Modal,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
 export default function FishingTipsScreen() {
   // State to track which season box is expanded
   const [selectedSeason, setSelectedSeason] = useState(null);
+  const [selectedMethod, setSelectedMethod] = useState(null);
 
   // Load Mononoki font
   const [fontsLoaded] = useFonts({
@@ -43,17 +43,40 @@ export default function FishingTipsScreen() {
     },
   ];
 
+  // Data for fishing methods
+  const methods = [
+    {
+      name: 'Casting 🎣',
+      content: 'Casting tips: Focus on accurate casting near structures. Vary your retrieve speed.',
+    },
+    {
+      name: 'Jigging 🪝',
+      content: 'Jigging tips: Use vertical motion to mimic injured baitfish. Ideal for deep-water fishing.',
+    },
+    {
+      name: 'Ice Fishing 🧊',
+      content: 'Ice fishing tips: Use small jigs and live bait. Drill multiple holes to find active fish.',
+    },
+    {
+      name: 'Trolling 🚤',
+      content: 'Trolling tips: Use crankbaits or spoons. Adjust your speed to match fish activity.',
+    },
+  ];
+
   return (
     <View style={styles.container}>
-      {/* Title Section */}
+      {/* Main Title Section */}
       <View style={styles.titleContainer}>
-        <Text style={[styles.title, { fontFamily: 'MononokiBold' }]}>
-          Fishing Tips for Different Seasons
+        <Text style={[styles.mainTitle, { fontFamily: 'MononokiBold' }]}>
+          Fishing Tips
         </Text>
       </View>
-
+  
       {/* Seasons Section */}
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <View style={styles.sectionContainer}>
+        <Text style={[styles.sectionTitle, { fontFamily: 'MononokiBold' }]}>
+          Seasons
+        </Text>
         <View style={styles.grid}>
           {seasons.map((season, index) => (
             <TouchableOpacity
@@ -68,8 +91,31 @@ export default function FishingTipsScreen() {
             </TouchableOpacity>
           ))}
         </View>
-      </ScrollView>
+      </View>
+  
+      {/* Fishing Methods Section */}
+      {/* Fishing Methods Section */}
+<View style={styles.sectionContainer}>
+  <Text style={[styles.sectionTitle, { fontFamily: 'MononokiBold' }]}>
+    Fishing Methods
+  </Text>
+  <View style={styles.grid}>
+    {methods.map((method, index) => (
+      <TouchableOpacity
+        key={index}
+        activeOpacity={0.9}
+        onPress={() => setSelectedMethod(method)} // Open popup with selected method
+        style={styles.methodBox} // Use methodBox for consistent sizing
+      >
+        <Text style={styles.methodBoxTitle}>
+          {method.name}
+        </Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+</View>
 
+  
       {/* Popup Modal for Season Content */}
       {selectedSeason && (
         <Modal
@@ -96,28 +142,77 @@ export default function FishingTipsScreen() {
           </View>
         </Modal>
       )}
+  
+      {/* Popup Modal for Method Content */}
+      {selectedMethod && (
+        <Modal
+          transparent={true}
+          animationType="fade"
+          visible={!!selectedMethod}
+          onRequestClose={() => setSelectedMethod(null)} // Close modal when back button is pressed
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text
+                style={[styles.modalTitle, { fontFamily: 'MononokiBold' }]}
+              >
+                {selectedMethod.name}
+              </Text>
+              <Text style={styles.modalText}>{selectedMethod.content}</Text>
+              <Pressable
+                style={styles.closeButton}
+                onPress={() => setSelectedMethod(null)} // Close modal
+              >
+                <Text style={styles.closeButtonText}>Close</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
-  );
-}
+  )};
+  
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f0f0',
   },
-  titleContainer: {
-    backgroundColor: 'indigo',
-    paddingVertical: 10,
-    alignItems: 'center',
+  contentContainer: {
+    padding: 12,
   },
-  title: {
-    fontSize: 21,
-    color: '#fff',
-    fontFamily: 'MononokiBold',
+  titleContainer: {
+    backgroundColor: 'indigo', // Match the image background color
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    borderRadius: 15,
+    alignSelf: 'center',
+    marginTop: 15,
+  },
+  mainTitle: {
+    fontSize: 30,
+    color: '#fff', // White text for contrast
+    textAlign: 'center',
+    fontFamily: 'MononokiBold', // Use the MononokiBold font
+    flexWrap: 'nowrap', // Prevent title from breaking
+    flexShrink: 1,
+  },
+  
+  subtitle: {
+    fontSize: 100,
+    color: '#cfcfcf',
     textAlign: 'center',
   },
-  contentContainer: {
-    padding: 10,
+  sectionContainer: {
+    marginVertical: 20,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    color: '#333',
+    marginBottom: 10,
+    textAlign: 'center',
+    marginTop: -5,
   },
   grid: {
     flexDirection: 'row',
@@ -127,7 +222,7 @@ const styles = StyleSheet.create({
   },
   box: {
     backgroundColor: '#ffffff',
-    padding: 15,
+    padding: 20, // Adjusted to prevent overly large padding
     borderRadius: 15,
     width: '48%',
     marginBottom: 10,
@@ -136,16 +231,39 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    alignItems: 'center', // Ensure text is centered
+    alignItems: 'center', // Centers content within the box
+    justifyContent: 'center', // Ensures text is vertically centered
   },
   boxTitle: {
-    fontSize: 18,
+    fontSize: 16, // Slightly smaller to fit longer words
     color: '#333333',
     textAlign: 'center',
+    flexWrap: 'nowrap', // Prevent wrapping
+  },
+  methodBox: {
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    width: '45%', // Consistent width for method boxes
+    height: 100, // Fixed height for all method boxes
+    marginBottom: 10,
+    marginTop: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    alignItems: 'center', // Centers text horizontally
+    justifyContent: 'center', // Centers text vertically
+  },
+  methodBoxTitle: {
+    fontSize: 18, // Font size for text
+    color: '#333333',
+    textAlign: 'center', // Center the text inside the box
+    fontFamily: 'MononokiBold', // Use the bold font
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dimmed background
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -155,11 +273,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
   modalTitle: {
     fontSize: 20,

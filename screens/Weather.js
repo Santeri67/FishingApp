@@ -77,16 +77,23 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f0f0',
     },
     titleContainer: {
-        backgroundColor: 'indigo',
-        paddingVertical: 10,
+        backgroundColor: 'indigo', // Match the title style
+        paddingVertical: 15,
+        paddingHorizontal: 20,
         alignItems: 'center',
-    },
-    title: {
-        color: '#fff',
-        fontSize: 21,
-        fontFamily: 'MononokiBold', // Applied Mononoki Bold font
-        paddingBottom: 23,
-    },
+        borderRadius: 15,
+        alignSelf: 'center',
+        marginTop: 15,
+      },
+      title: {
+        fontSize: 30,
+        color: '#fff', // White text for better readability
+        textAlign: 'center',
+        fontFamily: 'MononokiBold',
+        flexWrap: 'nowrap',
+        flexShrink: 1,
+      },
+      
     contentContainer: {
         padding: 20,
     },

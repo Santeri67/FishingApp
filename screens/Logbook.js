@@ -27,15 +27,22 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     backgroundColor: 'indigo',
-    paddingVertical: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
     alignItems: 'center',
+    borderRadius: 15,
+    alignSelf: 'center',
+    marginTop: 15,
   },
   title: {
+    fontSize: 30,
     color: '#fff',
-    fontSize: 21,
-    fontFamily: 'MononokiBold', // Applied Mononoki Bold font
-    paddingBottom: 23,
+    textAlign: 'center',
+    fontFamily: 'MononokiBold',
+    flexWrap: 'nowrap',
+    flexShrink: 1,
   },
+  
   contentContainer: {
     flex: 1,
     justifyContent: 'center',
