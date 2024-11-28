@@ -205,14 +205,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   sectionContainer: {
-    marginVertical: 20,
+    marginVertical: 5,
+    marginTop: 10,
+    paddingBottom: 0,
   },
   sectionTitle: {
     fontSize: 22,
     color: '#333',
     marginBottom: 10,
     textAlign: 'center',
-    marginTop: -5,
+    marginTop: 0,
   },
   grid: {
     flexDirection: 'row',
