@@ -1,4 +1,3 @@
-import { useFonts } from 'expo-font';
 import React, { useState } from 'react';
 import {
   Modal,
@@ -14,14 +13,9 @@ export default function FishingTipsScreen() {
   const [selectedSeason, setSelectedSeason] = useState(null);
   const [selectedMethod, setSelectedMethod] = useState(null);
 
-  // Load Mononoki font
-  const [fontsLoaded] = useFonts({
-    MononokiBold: require('../assets/fonts/mononoki-Bold.ttf'), // Adjust the path if needed
-  });
 
-  if (!fontsLoaded) {
-    return null; // Render nothing until fonts are loaded
-  }
+
+
 
   // Data for the seasons
   const seasons = [

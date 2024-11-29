@@ -3,8 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useFonts } from 'expo-font';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import FishingTipsScreen from './screens/FishingTips';
 import HourlyForecastScreen from './screens/HourlyForecast';
 import LogbookScreen from './screens/Logbook';
@@ -16,7 +15,6 @@ const Tab = createBottomTabNavigator();
 // Stack Navigator for Weather
 const Stack = createStackNavigator();
 
-// Weather Stack Navigator
 function WeatherStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -27,24 +25,30 @@ function WeatherStack() {
 }
 
 export default function App() {
-  // Load custom font
+  // Load fonts globally
   const [fontsLoaded] = useFonts({
+    MononokiBold: require('./assets/fonts/mononoki-Bold.ttf'),
+    MononokiRegular: require('./assets/fonts/mononoki-Regular.ttf'),
     Lobster: require('./assets/fonts/Lobster-Regular.ttf'),
   });
 
   if (!fontsLoaded) {
-    return null; // Wait until the font is loaded
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   return (
     <NavigationContainer>
       <View style={styles.wrapperContainer}>
-        {/* Header */}
+        {/* App Header */}
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>FishingBuddy</Text>
         </View>
 
-        {/* Bottom Tab Navigator */}
+        {/* Bottom Tabs */}
         <Tab.Navigator
           screenOptions={{
             headerShown: false,
@@ -94,7 +98,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 40,
     fontWeight: 'bold',
-    fontFamily: 'Lobster',
+    fontFamily: 'Lobster', // Use globally loaded font
   },
   tabBarStyle: {
     height: 90,
