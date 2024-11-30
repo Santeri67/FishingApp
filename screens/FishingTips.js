@@ -61,7 +61,7 @@ export default function FishingTipsScreen() {
     <View style={styles.container}>
       {/* Main Title Section */}
       <View style={styles.titleContainer}>
-        <Text style={[styles.mainTitle, { fontFamily: 'MononokiBold' }]}>
+        <Text style={[styles.mainTitle ]}>
           Fishing Tips
         </Text>
       </View>
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#fff', // White text for contrast
     textAlign: 'center',
-    fontFamily: 'MononokiBold', // Use the MononokiBold font
+    fontFamily: 'MononokiBold',
     flexWrap: 'nowrap', // Prevent title from breaking
     flexShrink: 1,
   },
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 25,
     color: '#333',
     marginBottom: 10,
     textAlign: 'center',

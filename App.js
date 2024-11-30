@@ -30,6 +30,9 @@ export default function App() {
     MononokiBold: require('./assets/fonts/mononoki-Bold.ttf'),
     MononokiRegular: require('./assets/fonts/mononoki-Regular.ttf'),
     Lobster: require('./assets/fonts/Lobster-Regular.ttf'),
+    FiraCodeBold: require('./assets/fonts/FiraCode-Bold.ttf'),
+    FiraCodeRegular: require('./assets/fonts/FiraCode-VariableFont_wght.ttf'),
+
   });
 
   if (!fontsLoaded) {
@@ -47,7 +50,7 @@ export default function App() {
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>FishingBuddy</Text>
         </View>
-
+  
         {/* Bottom Tabs */}
         <Tab.Navigator
           screenOptions={{
@@ -60,6 +63,11 @@ export default function App() {
             component={FishingTipsScreen}
             options={{
               tabBarIcon: () => <Text style={styles.tabIcon}>🐟</Text>,
+              tabBarLabel: ({ focused }) => (
+                <Text style={[styles.tabLabel, focused && styles.tabLabelFocused]}>
+                  Fishing Tips
+                </Text>
+              ),
             }}
           />
           <Tab.Screen
@@ -67,6 +75,11 @@ export default function App() {
             component={WeatherStack}
             options={{
               tabBarIcon: () => <Text style={styles.tabIcon}>🌤️</Text>,
+              tabBarLabel: ({ focused }) => (
+                <Text style={[styles.tabLabel, focused && styles.tabLabelFocused]}>
+                  Weather
+                </Text>
+              ),
             }}
           />
           <Tab.Screen
@@ -74,13 +87,18 @@ export default function App() {
             component={LogbookScreen}
             options={{
               tabBarIcon: () => <Text style={styles.tabIcon}>📖</Text>,
+              tabBarLabel: ({ focused }) => (
+                <Text style={[styles.tabLabel, focused && styles.tabLabelFocused]}>
+                  Logbook
+                </Text>
+              ),
             }}
           />
         </Tab.Navigator>
       </View>
     </NavigationContainer>
   );
-}
+}  
 
 const styles = StyleSheet.create({
   wrapperContainer: {
@@ -107,5 +125,14 @@ const styles = StyleSheet.create({
   },
   tabIcon: {
     fontSize: 30,
+  },
+  tabLabel: {
+    fontSize: 12, // Default size for label
+    fontFamily: 'FiraCodeRegular', // Default font
+    color: '#ffffff', // Default color
+  },
+  tabLabelFocused: {
+    color: '#b147ff', // Highlight color for active tab
+    fontFamily: 'FiraCodeBold', // Bold font for active tab
   },
 });

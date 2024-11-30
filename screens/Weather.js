@@ -249,16 +249,17 @@ boldText: {
 },
 ctaButton: {
     backgroundColor: 'indigo',
-    paddingVertical: 15,
+    paddingVertical: 16,
     paddingHorizontal: 20,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 30,
 },
 ctaButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
+    fontFamily: 'FiraCodeBold',
 },
 errorText: {
     color: 'red',
