@@ -9,64 +9,61 @@ import {
 } from 'react-native';
 
 export default function FishingTipsScreen() {
-  // State to track which season box is expanded
+  // State, joka seuraa laajennettua season "boxia"
   const [selectedSeason, setSelectedSeason] = useState(null);
+  // State, joka seuraa laajennettua kalastusmetodi "boxia"
   const [selectedMethod, setSelectedMethod] = useState(null);
 
-
-
-
-
-  // Data for the seasons
+  // Data kausivinkkejä (Fishing Tips) varten
   const seasons = [
     {
       name: 'Spring 🌸',
-      content: 'Spring fishing tips: Fish tend to be active in shallow waters. Use brightly colored lures.',
+      content: 'Fish tend to be active in shallow waters. Use brightly colored lures.',
     },
     {
       name: 'Summer ☀️',
-      content: 'Summer fishing tips: Early morning and evening are the best times. Try topwater baits.',
+      content: 'Early morning and evening are the best times. Try topwater baits. If fish not active, use light colors, if active, use brightly colored baits. Matte colors are best for sea.',
     },
     {
       name: 'Fall 🍂',
-      content: 'Fall fishing tips: Fish move to deeper waters; crankbaits are effective.',
+      content: 'Fish move to deeper waters; crankbaits are effective.',
     },
     {
       name: 'Winter ❄️',
-      content: 'Winter fishing tips: Focus on slow-moving baits as fish are less active.',
+      content: 'Focus on slow-moving baits as fish are less active. Ice Jigging recommended.',
     },
   ];
 
-  // Data for fishing methods
+  // Data kalastusmenetelmille
   const methods = [
     {
       name: 'Casting 🎣',
-      content: 'Casting tips: Focus on accurate casting near structures. Vary your retrieve speed.',
+      content: 'Focus on accurate casting near structures, underwater rocks and banks. Vary your retrieve speed based on water temperature, and if fish is active or not.',
     },
     {
       name: 'Jigging 🪝',
-      content: 'Jigging tips: Use vertical motion to mimic injured baitfish. Ideal for deep-water fishing.',
+      content: 'Use vertical motion to mimic injured baitfish. Ideal for deep-water fishing. If water is cold, reel the jig carefully (slowly), if warm, reel faster. Light "jigging" rod recommended for better handling and feel. Jigging recommended for Perch and Zander no matter the season expect for winter Ice Jigging. ',
     },
     {
       name: 'Ice Fishing 🧊',
-      content: 'Ice fishing tips: Use small jigs and live bait. Drill multiple holes to find active fish.',
+      content: 'Use small jigs and live bait. Drill multiple holes to find active fish. Little twitching movement. ',
     },
     {
       name: 'Trolling 🚤',
-      content: 'Trolling tips: Use crankbaits or spoons. Adjust your speed to match fish activity.',
+      content: 'Use crankbaits or spoons. Adjust your speed to match fish activity. Use different crankbaits for different depths',
     },
   ];
 
   return (
     <View style={styles.container}>
-      {/* Main Title Section */}
+      {/* Otsikko-osio */}
       <View style={styles.titleContainer}>
         <Text style={[styles.mainTitle ]}>
           Fishing Tips
         </Text>
       </View>
   
-      {/* Seasons Section */}
+      {/* Kaudet-osio */}
       <View style={styles.sectionContainer}>
         <Text style={[styles.sectionTitle, { fontFamily: 'MononokiBold' }]}>
           Seasons
@@ -76,7 +73,7 @@ export default function FishingTipsScreen() {
             <TouchableOpacity
               key={index}
               activeOpacity={0.9}
-              onPress={() => setSelectedSeason(season)} // Open popup with selected season
+              onPress={() => setSelectedSeason(season)} // Avaa (modal) kauden tiedoille
               style={styles.box}
             >
               <Text style={[styles.boxTitle, { fontFamily: 'MononokiBold' }]}>
@@ -87,36 +84,34 @@ export default function FishingTipsScreen() {
         </View>
       </View>
   
-      {/* Fishing Methods Section */}
-      {/* Fishing Methods Section */}
-<View style={styles.sectionContainer}>
-  <Text style={[styles.sectionTitle, { fontFamily: 'MononokiBold' }]}>
-    Fishing Methods
-  </Text>
-  <View style={styles.grid}>
-    {methods.map((method, index) => (
-      <TouchableOpacity
-        key={index}
-        activeOpacity={0.9}
-        onPress={() => setSelectedMethod(method)} // Open popup with selected method
-        style={styles.methodBox} // Use methodBox for consistent sizing
-      >
-        <Text style={styles.methodBoxTitle}>
-          {method.name}
+      {/* Kalastusmenetelmät-osio */}
+      <View style={styles.sectionContainer}>
+        <Text style={[styles.sectionTitle, { fontFamily: 'MononokiBold' }]}>
+          Fishing Methods
         </Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-</View>
+        <View style={styles.grid}>
+          {methods.map((method, index) => (
+            <TouchableOpacity
+              key={index}
+              activeOpacity={0.9}
+              onPress={() => setSelectedMethod(method)} // Avaa modaalinen metodin tiedoille
+              style={styles.methodBox} // Metodiboxi, jolla on kiinteä korkeus ja leveys
+            >
+              <Text style={styles.methodBoxTitle}>
+                {method.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
 
-  
-      {/* Popup Modal for Season Content */}
+      {/* Modaalinen popup kauden sisällölle */}
       {selectedSeason && (
         <Modal
           transparent={true}
           animationType="fade"
           visible={!!selectedSeason}
-          onRequestClose={() => setSelectedSeason(null)} // Close modal when back button is pressed
+          onRequestClose={() => setSelectedSeason(null)} // Sulkee modaalisen ikkunan
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
@@ -128,7 +123,7 @@ export default function FishingTipsScreen() {
               <Text style={styles.modalText}>{selectedSeason.content}</Text>
               <Pressable
                 style={styles.closeButton}
-                onPress={() => setSelectedSeason(null)} // Close modal
+                onPress={() => setSelectedSeason(null)} // Sulkee modaalin
               >
                 <Text style={styles.closeButtonText}>Close</Text>
               </Pressable>
@@ -137,13 +132,13 @@ export default function FishingTipsScreen() {
         </Modal>
       )}
   
-      {/* Popup Modal for Method Content */}
+      {/* Modaalinen popup metodin sisällölle */}
       {selectedMethod && (
         <Modal
           transparent={true}
           animationType="fade"
           visible={!!selectedMethod}
-          onRequestClose={() => setSelectedMethod(null)} // Close modal when back button is pressed
+          onRequestClose={() => setSelectedMethod(null)} // Sulkee modaalisen ikkunan
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
@@ -155,7 +150,7 @@ export default function FishingTipsScreen() {
               <Text style={styles.modalText}>{selectedMethod.content}</Text>
               <Pressable
                 style={styles.closeButton}
-                onPress={() => setSelectedMethod(null)} // Close modal
+                onPress={() => setSelectedMethod(null)} // Sulkee modaalin
               >
                 <Text style={styles.closeButtonText}>Close</Text>
               </Pressable>
@@ -164,8 +159,8 @@ export default function FishingTipsScreen() {
         </Modal>
       )}
     </View>
-  )};
-  
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -176,7 +171,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   titleContainer: {
-    backgroundColor: 'indigo', // Match the image background color
+    backgroundColor: 'indigo',
     paddingVertical: 15,
     paddingHorizontal: 20,
     alignItems: 'center',
@@ -186,13 +181,12 @@ const styles = StyleSheet.create({
   },
   mainTitle: {
     fontSize: 30,
-    color: '#fff', // White text for contrast
+    color: '#fff',
     textAlign: 'center',
     fontFamily: 'MononokiBold',
-    flexWrap: 'nowrap', // Prevent title from breaking
+    flexWrap: 'nowrap',
     flexShrink: 1,
   },
-  
   subtitle: {
     fontSize: 100,
     color: '#cfcfcf',
@@ -204,7 +198,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   sectionTitle: {
-    fontSize: 25,
+    fontSize: 28,
     color: '#333',
     marginBottom: 10,
     textAlign: 'center',
@@ -218,7 +212,7 @@ const styles = StyleSheet.create({
   },
   box: {
     backgroundColor: '#ffffff',
-    padding: 20, // Adjusted to prevent overly large padding
+    padding: 20,
     borderRadius: 15,
     width: '48%',
     marginBottom: 10,
@@ -227,20 +221,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    alignItems: 'center', // Centers content within the box
-    justifyContent: 'center', // Ensures text is vertically centered
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   boxTitle: {
-    fontSize: 16, // Slightly smaller to fit longer words
+    fontSize: 16,
     color: '#333333',
     textAlign: 'center',
-    flexWrap: 'nowrap', // Prevent wrapping
+    flexWrap: 'nowrap',
   },
   methodBox: {
     backgroundColor: '#ffffff',
     borderRadius: 15,
-    width: '45%', // Consistent width for method boxes
-    height: 100, // Fixed height for all method boxes
+    width: '45%',
+    height: 100,
     marginBottom: 10,
     marginTop: 0,
     shadowColor: '#000',
@@ -248,14 +242,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    alignItems: 'center', // Centers text horizontally
-    justifyContent: 'center', // Centers text vertically
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   methodBoxTitle: {
-    fontSize: 18, // Font size for text
+    fontSize: 18,
     color: '#333333',
-    textAlign: 'center', // Center the text inside the box
-    fontFamily: 'MononokiBold', // Use the bold font
+    textAlign: 'center',
+    fontFamily: 'MononokiBold',
   },
   modalOverlay: {
     flex: 1,

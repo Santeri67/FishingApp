@@ -17,42 +17,42 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function LogbookScreen() {
-  // State Variables
-  const [logs, setLogs] = useState([]);
-  const [logData, setLogData] = useState(initialLogData());
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isCatchDetailsVisible, setIsCatchDetailsVisible] = useState(false);
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [selectedLogIndex, setSelectedLogIndex] = useState(null);
-  const [date, setDate] = useState(new Date());
-  const [showSuggestion, setShowSuggestion] = useState(true);
+  // Tilamuuttujat
+  const [logs, setLogs] = useState([]); // Kalastuspäiväkirjan merkintöjen lista
+  const [logData, setLogData] = useState(initialLogData()); // Yksittäisen merkinnän tiedot
+  const [isModalVisible, setIsModalVisible] = useState(false); // Näkyykö merkinnän lisäysmodaali
+  const [isCatchDetailsVisible, setIsCatchDetailsVisible] = useState(false); // Näkyykö lisäkentät saalistiedoille
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // Näkyykö poistovahvistusmodaali
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false); // Näkyykö päivämääränvalitsin
+  const [selectedLogIndex, setSelectedLogIndex] = useState(null);// Poistettavan merkinnän indeksi
+  const [date, setDate] = useState(new Date()); // Valittu päivämäärä
+  const [showSuggestion, setShowSuggestion] = useState(true); // Näytetäänkö ohjeet käyttäjälle
 
-  // Initial Log Data
+  // Funktio: Palauttaa oletustiedot uudelle merkinnälle
   function initialLogData() {
     return {
       bait: '',
       fishSpot: '',
       weather: '',
       date: '',
-      catchDetails: '',
+      fishSpecies: '',
       weight: '',
       length: '',
       gear: '',
     };
   }
-
+   // Effect: Piilottaa ohjebannerin 5 sekunnin kuluttua
   useEffect(() => {
-    const timer = setTimeout(() => setShowSuggestion(false), 5000); // Hide after 5 seconds
+    const timer = setTimeout(() => setShowSuggestion(false), 5000);
     return () => clearTimeout(timer); // Cleanup timer
   }, []);
 
-  // Effect: Load Logs from AsyncStorage
+  // Effect: Lataa merkinnät AsyncStoragesta
   useEffect(() => {
     const loadLogs = async () => {
       try {
         const storedLogs = await AsyncStorage.getItem('fishingLogs');
-        if (storedLogs) setLogs(JSON.parse(storedLogs));
+        if (storedLogs) setLogs(JSON.parse(storedLogs)); // Parsii tallennetut merkinnät JSON:ksi
       } catch (error) {
         console.error('Failed to load logs from storage', error);
       }
@@ -60,7 +60,7 @@ export default function LogbookScreen() {
     loadLogs();
   }, []);
 
-  // Effect: Save Logs to AsyncStorage
+// Effect: Tallentaa merkinnät AsyncStorageen aina, kun merkintöjä päivitetään
   useEffect(() => {
     const saveLogs = async () => {
       try {
@@ -72,48 +72,49 @@ export default function LogbookScreen() {
     saveLogs();
   }, [logs]);
 
-  // Handlers for Input and Form Actions
+  // Funktio: Päivittää tietyn kentän arvon merkinnässä
   const handleInputChange = (field, value) => setLogData((prev) => ({ ...prev, [field]: value }));
-
+  
+  // Funktio: Lisää uuden merkinnän ja nollaa lomakkeen
   const addLog = () => {
     setLogs((prevLogs) => [...prevLogs, logData]);
-    resetLogForm();
+    resetLogForm(); // Tyhjentää lomakkeen tiedot
   };
-
+  // Funktio: Nollaa lomakkeen ja sulkee modalit
   const resetLogForm = () => {
-    setLogData(initialLogData());
-    setIsModalVisible(false);
-    setIsCatchDetailsVisible(false);
+    setLogData(initialLogData()); // Palauttaa lomakkeen alkuperäiset arvot
+    setIsModalVisible(false); // Sulkee lisäysmodalin
+    setIsCatchDetailsVisible(false); // Piilottaa CatchDetail
   };
-
+    // Funktio: Käsittelee päivämäärän valitsimen muutoksia
   const handleDateChange = (event, selectedDate) => {
     if (Platform.OS === 'ios') {
-      setDate(selectedDate || date);
+      setDate(selectedDate || date); // Päivittää päivämäärän
     } else {
-      setIsDatePickerVisible(false);
+      setIsDatePickerVisible(false); // Piilottaa valitsimen Androidilla
       if (selectedDate) updateDate(selectedDate);
     }
   };
-
+  // Funktio: Päivittää valitun päivämäärän
   const updateDate = (selectedDate) => {
-    setDate(selectedDate);
-    handleInputChange('date', selectedDate.toISOString().split('T')[0]); // Format: YYYY-MM-DD
+    setDate(selectedDate); // Asettaa päivämäärän
+    handleInputChange('date', selectedDate.toISOString().split('T')[0]); // Muotoilee päivämäärän: YYYY-MM-DD
   };
-
+    // Funktio: iOS-päivämäärä valitsimen vahvistaminen
   const confirmIOSDate = () => {
-    updateDate(date);
-    setIsDatePickerVisible(false);
+    updateDate(date); // Päivittää päivämäärän valinnan
+    setIsDatePickerVisible(false); // Sulkee valitsimen
   };
-
+    // Funktio: Poistaa valitun merkinnän
   const deleteLog = () => {
     if (selectedLogIndex !== null) {
       setLogs((prevLogs) => prevLogs.filter((_, index) => index !== selectedLogIndex));
-      setSelectedLogIndex(null);
-      setIsDeleteModalVisible(false);
+      setSelectedLogIndex(null); // Nollaa poistettavan indeksin
+      setIsDeleteModalVisible(false); // Sulkee poistovahvistusmodaalin
     }
   };
 
-  // Render Functions
+  // Funktio: Renderöi merkinnät listaan
   const renderLogs = () =>
     logs.length === 0 ? (
       <Text style={styles.emptyMessage}>No logs yet. Start adding some!</Text>
@@ -123,65 +124,85 @@ export default function LogbookScreen() {
           key={index}
           style={styles.logItem}
           onLongPress={() => {
-            setSelectedLogIndex(index);
-            setIsDeleteModalVisible(true);
+            setSelectedLogIndex(index); // Asettaa poistettavan merkinnän
+            setIsDeleteModalVisible(true); // Näyttää poistovahvistusmodaalin
             console.log(`Log at index ${index} is ready to delete`);
           }}
         >
-          <Text style={styles.logText}>{`Log ${index + 1}`}</Text>
-        {Object.entries(log).map(([key, value]) => {
-          if (value) {
-            // Display "Fish Species" instead of "CatchDetails"
-            const displayKey =
-              key === "catchDetails" ? "Fish Species" : key.charAt(0).toUpperCase() + key.slice(1);
-            return (
-              <Text style={styles.logText} key={key}>
-                <Text style={styles.logField}>{displayKey}:</Text> {value}
-              </Text>
-            );
-          }
-        })}
-      </TouchableOpacity>
-    ))
-  );
-
-  const renderDatePickerModal = () =>
-    isDatePickerVisible && Platform.OS === 'ios' && (
-      <Modal transparent={true} animationType="fade" visible={isDatePickerVisible} onRequestClose={() => setIsDatePickerVisible(false)}>
-        <View style={styles.datePickerModal}>
-          <DateTimePicker value={date} mode="date" display="spinner" onChange={handleDateChange} />
-          <Pressable style={styles.doneButton} onPress={confirmIOSDate}>
-            <Text style={styles.doneButtonText}>Done</Text>
-          </Pressable>
-        </View>
-      </Modal>
-    );
-
-  // Main Component
-  return (
-    <View style={styles.container}>
-      {/* Suggestion Banner */}
-      {showSuggestion && (
-        <View style={styles.suggestionBanner}>
-          <Text style={styles.suggestionText}>
-            Long press a log to delete it!
-          </Text>
-        </View>
-      )}
-      {/* Title */}
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Fishing Logbook</Text>
-      </View>
+          {/* Korostaa Log otsikon (Log1)*/}
+          <Text style={styles.logTitle}>{`Log ${index + 1}`}</Text>
+          {Object.entries(log).map(([key, value]) => {
+            if (value) {
+              let displayValue = value;
+              if (key === 'weight') displayValue = `${value} kg`;
+              if (key === 'length') displayValue = `${value} cm`;
   
-      {/* Log List */}
+              return (
+                <Text style={styles.logText} key={key}>
+                  <Text style={styles.logField}>
+                    {key === 'fishSpecies'
+                      ? 'Fish Species'
+                      : key.charAt(0).toUpperCase() + key.slice(1)}
+                    :
+                  </Text>{' '}
+                  {displayValue}
+                </Text>
+              );
+            }
+          })}
+        </TouchableOpacity>
+      ))
+    );
+  
+    // Funktio: Renderöi iOS-päivämäärän valitsimen
+    const renderDatePickerModal = () =>
+      isDatePickerVisible && Platform.OS === 'ios' && (
+        <Modal
+  transparent={true}
+  animationType="fade"
+  visible={isDatePickerVisible}
+  onRequestClose={() => setIsDatePickerVisible(false)}
+>
+  <View style={styles.datePickerOverlay}>
+    <View style={styles.datePickerWrapper}>
+      <View style={styles.datePickerBackground}>
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="spinner"
+          onChange={handleDateChange}
+        />
+      </View>
+      <Pressable style={styles.doneButton} onPress={confirmIOSDate}>
+        <Text style={styles.doneButtonText}>Done</Text>
+      </Pressable>
+    </View>
+  </View>
+</Modal>
+);
+  
+    return (
+      <View style={styles.container}>
+        {/* Ohjebanneri käyttäjälle (miten poistaa Log) */}
+        {showSuggestion && (
+          <View style={styles.suggestionBanner}>
+            <Text style={styles.suggestionText}>Long press a log to delete it!</Text>
+          </View>
+        )}
+        {/* Title */}
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Fishing Logbook</Text>
+        </View>
+  
+      {/* Log Lista */}
       <ScrollView style={styles.logList}>{renderLogs()}</ScrollView>
   
-      {/* Add Log Button */}
+      {/* Lisää Log-nappi */}
       <TouchableOpacity style={styles.addButton} onPress={() => setIsModalVisible(true)}>
         <Text style={styles.addButtonText}>Add Log</Text>
       </TouchableOpacity>
   
-      {/* Add Log Modal */}
+      {/* Lisää Log Modal */}
       <Modal
         transparent={true}
         animationType="slide"
@@ -195,16 +216,16 @@ export default function LogbookScreen() {
               <KeyboardAwareScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled"
-                extraScrollHeight={-160}
+                extraScrollHeight={-160}  // pitää tekstikentän näkyvissä, jos kenttä jää näppäimistön alle.
                 enableOnAndroid={true}
                 enableAutomaticScroll={true}
               >
-                {/* Input Fields */}
+                {/* Lomakkeen kentät */}
                 <Text style={styles.inputLabel}>Bait & Lure:</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="e.g., Worm, Minnow"
-                  placeholderTextColor="rgba(0, 0, 0, 0.1)" // Adjust placeholder visibility
+                  placeholderTextColor="rgba(0, 0, 0, 0.1)" // Sopiva vaalea väri tekstille
                   value={logData.bait}
                   onChangeText={(value) => handleInputChange('bait', value)}
                 />
@@ -213,7 +234,7 @@ export default function LogbookScreen() {
                 <TextInput
                   style={styles.input}
                   placeholder="e.g., Riverbank, Lake"
-                  placeholderTextColor='rgba(0, 0, 0, 0.1)' // Adjust placeholder visibility
+                  placeholderTextColor='rgba(0, 0, 0, 0.1)' // Sopiva vaalea väri tekstille
                   value={logData.fishSpot}
                   onChangeText={(value) => handleInputChange('fishSpot', value)}
                 />
@@ -224,7 +245,7 @@ export default function LogbookScreen() {
                     <TextInput
                       style={styles.halfInput}
                       placeholder="Sunny, Rainy etc"
-                      placeholderTextColor= 'rgba(0, 0, 0, 0.1)' // Adjust placeholder visibility
+                      placeholderTextColor= 'rgba(0, 0, 0, 0.1)' // Sopiva vaalea väri tekstille
                       value={logData.weather}
                       onChangeText={(value) => handleInputChange('weather', value)}
                     />
@@ -244,7 +265,7 @@ export default function LogbookScreen() {
                 <TextInput
                   style={styles.input}
                   placeholder="e.g., Northern Pike, Zander, Salmon etc"
-                  placeholderTextColor='rgba(0, 0, 0, 0.1)' // Adjust placeholder color for better visibility
+                  placeholderTextColor='rgba(0, 0, 0, 0.1)' // Sopiva vaalea väri tekstille
                   value={logData.catchDetails}
                   onChangeText={(value) => handleInputChange('catchDetails', value)}
                 />
@@ -259,7 +280,7 @@ export default function LogbookScreen() {
               <TextInput
               style={styles.input}
               placeholder="e.g., Spinning- JigRod, Boat, etc"
-              placeholderTextColor='rgba(0, 0, 0, 0.11)' // Adjust placeholder color for better visibility
+              placeholderTextColor='rgba(0, 0, 0, 0.11)' // Sopiva vaalea väri tekstille
               value={logData.gear}
               onChangeText={(value) => handleInputChange('gear', value)}
             />
@@ -280,62 +301,86 @@ export default function LogbookScreen() {
   
       {/* Delete Log Modal */}
       <Modal
-        transparent={true}
-        animationType="fade"
-        visible={isDeleteModalVisible}
-        onRequestClose={() => setIsDeleteModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.deleteModalContent}>
-            <Text style={styles.modalTitle}>Do you want to delete this log?</Text>
-            <Text style={styles.modalSubtitle}>Are you sure?</Text>
-            <View style={styles.modalButtons}>
-              <Pressable style={styles.saveButton} onPress={deleteLog}>
-                <Text style={styles.saveButtonText}>Yes, Delete</Text>
-              </Pressable>
-              <Pressable
-                style={styles.cancelButton}
-                onPress={() => setIsDeleteModalVisible(false)}
-              >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
-  
-      {/* Date Picker Modal */}
-      {renderDatePickerModal()}
+  transparent={true} // Modalin tausta läpinäkyvä.
+  animationType="fade"
+  visible={isDeleteModalVisible}
+  onRequestClose={() => setIsDeleteModalVisible(false)}
+  // Toiminto, joka suoritetaan, kun käyttäjä yrittää sulkea modaalin (esim. painamalla takaisin-nappia).
+>
+  <View style={styles.modalOverlay}>
+    <View style={styles.deleteModalContent}>
+      <Text style={styles.modalTitle}>Do you want to delete this log?</Text>
+      
+      <Text style={styles.modalSubtitle}>Are you sure?</Text>
+
+      <View style={styles.modalButtons}>
+        <Pressable style={styles.saveButton} onPress={deleteLog}>
+          {/* Painike, joka kutsuu `deleteLog`-funktiota poistaakseen lokin, kun sitä painetaan. */}
+          <Text style={styles.saveButtonText}>Yes, Delete</Text>
+        </Pressable>
+        <Pressable
+          style={styles.cancelButton}
+          onPress={() => setIsDeleteModalVisible(false)}
+          // Painike, joka sulkee modaalin ilman muutoksia, kun sitä painetaan.
+        >
+          <Text style={styles.cancelButtonText}>Cancel</Text>
+        </Pressable>
+      </View>
     </View>
-  );
-  
+  </View>
+</Modal>
+
+{renderDatePickerModal()}
+{/* Kutsuu renderDatePickerModal-funktion, joka näyttää päivämäärävalitsimen, jos se on näkyvissä. */}
+</View>
+);
 }
 
 // Custom Components
+// TextInputField-komponentti: Yksittäinen syötekenttä, joka sisältää tekstin (label) ja itse tekstisyötekentän.
 const TextInputField = ({ label, placeholder, value, onChangeText }) => (
   <>
     <Text style={styles.inputLabel}>{label}</Text>
-    <TextInput style={styles.input} placeholder={placeholder} value={value} onChangeText={onChangeText} />
+    {/* Näyttää kentän otsikon, esimerkiksi "Weight" tai "Length". */}
+    <TextInput
+      style={styles.input}
+      placeholder={placeholder}
+      value={value}
+      onChangeText={onChangeText}
+      // Syötekenttä
+      // Muutokset tallennetaan onChangeText-funktion kautta.
+    />
   </>
 );
 
+// MoreCatchDetails-komponentti (paino ja pituus.)
 const MoreCatchDetails = ({ isVisible, onToggle, logData, onChange }) => (
   <>
     <TouchableOpacity style={styles.moreDetailsButton} onPress={onToggle}>
-      <Text style={styles.moreDetailsButtonText}>{isVisible ? 'Hide Details' : 'More Catch Details'}</Text>
+      {/* Painike, joka näyttää tai piilottaa lisätietokentät (Weight ja Length). */}
+      <Text style={styles.moreDetailsButtonText}>
+        {isVisible ? 'Hide Details' : 'More Catch Details'}
+        {/* Teksti muuttuu sen mukaan, ovatko lisätiedot näkyvissä. */}
+      </Text>
     </TouchableOpacity>
     {isVisible && (
+      // Näytetään lisätiedot vain, jos isVisible on true.
       <View style={styles.row}>
         <View style={styles.halfInputContainer}>
+          {/* Painokentän kontti. */}
           <Text style={styles.inputLabelSmall}>Weight:</Text>
+          {/* Painon otsikkoteksti. */}
           <View style={styles.row}>
             <TextInput
               style={styles.smallInput}
               placeholder="e.g., 2.5"
-              placeholderTextColor="rgba(0, 0, 0, 0.1)" // Adjust placeholder color
+              placeholderTextColor="rgba(0, 0, 0, 0.1)"
+              // Placeholder-teksti antaa esimerkin oikeasta syötemuodosta.
               value={logData.weight}
               onChangeText={(value) => onChange('weight', value)}
-              keyboardType="numeric" // Ensure numeric keyboard for weight
+              // Syötteen muutos tallennetaan onChange-funktion kautta logData-objektiin.
+              keyboardType="numeric"
+              // Avataan vain numeronäppäimistö.
             />
             <Text style={styles.unit}>kg</Text>
           </View>
@@ -346,18 +391,23 @@ const MoreCatchDetails = ({ isVisible, onToggle, logData, onChange }) => (
             <TextInput
               style={styles.smallInput}
               placeholder="e.g., 50"
-              placeholderTextColor="rgba(0, 0, 0, 0.1)" // Adjust placeholder color
+              placeholderTextColor="rgba(0, 0, 0, 0.1)"
+              // Placeholder-teksti, joka näyttää esimerkkimuodon pituudelle.
               value={logData.length}
               onChangeText={(value) => onChange('length', value)}
-              keyboardType="numeric" // Ensure numeric keyboard for length
+              // Syötteen muutos tallennetaan onChange-funktion kautta logData-objektiin.
+              keyboardType="numeric"
+              // Avataan vain numeronäppäimistö.
             />
             <Text style={styles.unit}>cm</Text>
+            {/* Yksikkö, joka ilmoittaa, että pituus annetaan senttimetreinä. */}
           </View>
         </View>
       </View>
     )}
   </>
 );
+
 
 
 
@@ -508,8 +558,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dateText: {
+    fontWeight: 'bold',
     fontSize: 14,
-    color: 'rgba(0, 0, 0, 0.15)',
+    color: 'rgba(0, 0, 0, 0.6)',
     textAlign: 'center',
   },
   smallInputContainer: {
@@ -570,20 +621,32 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   datePickerModal: {
-    flex: 0.9, // Ensure it doesn’t take too much screen space
     justifyContent: 'flex-end', // Center the picker vertically
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Semi-transparent background
     padding: 10,
   },
-  datePickerWrapper: {
-    backgroundColor: 'yellow',
-    color: 'yellow',
-    width: '90%',
+  datePickerOverlay: {
+    marginBottom: '-110%',
+    flex: 1.2,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark semi-transparent background
     justifyContent: 'center',
-    borderRadius: 20,
-    padding: 20,
+    alignItems: 'center',
   },
+  
+  datePickerWrapper: {
+    backgroundColor: '#22052e', // Background for the picker container
+    borderRadius: 20,
+    padding: 10,
+    width: '90%',
+    alignItems: 'center',
+  },
+  datePickerBackground: {
+    backgroundColor: '#22052e', // Dark background for the wheel
+    borderRadius: 15,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  
   doneButton: {
     marginTop: 15,
     backgroundColor: 'mediumpurple',
@@ -592,6 +655,7 @@ const styles = StyleSheet.create({
     width: '30%',
     alignItems: 'center',
   },
+  
   doneButtonText: {
     color: 'white',
     fontWeight: 'bold',
@@ -621,5 +685,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'white',
     fontFamily: 'MononokiRegular',
+  },
+  logTitle: {
+    fontFamily: 'MononokiBold', // Use a bold font for emphasis
+    fontSize: 20, // Larger font size
+    color: 'indigo', // Keep the text color as black
+    marginBottom: 10, // Add some spacing below the title
   },
 });
